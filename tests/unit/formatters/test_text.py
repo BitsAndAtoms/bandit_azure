@@ -28,22 +28,13 @@ class TextFormatterTests(testtools.TestCase):
 
         def _template(_issue, _indent_val, _code):
             return_val = [
-                "{}>> Issue: [{}:{}] {}".format(
-                    _indent_val, _issue.test_id, _issue.test, _issue.text
-                ),
-                "{}   Severity: {}   Confidence: {}".format(
-                    _indent_val,
-                    _issue.severity.capitalize(),
-                    _issue.confidence.capitalize(),
-                ),
+                f"{_indent_val}>> Issue: [{_issue.test_id}:{_issue.test}] {_issue.text}",
+                f"{_indent_val}   Severity: {_issue.severity.capitalize()}   Confidence: {_issue.confidence.capitalize()}",
                 f"{_indent_val}   CWE: {_issue.cwe}",
-                "{}   More Info: {}".format(
-                    _indent_val, docs_utils.get_url(_issue.test_id)
-                ),
-                "{}   Location: {}:{}:{}".format(
-                    _indent_val, _issue.fname, _issue.lineno, _issue.col_offset
-                ),
+                f"{_indent_val}   More Info: {docs_utils.get_url(_issue.test_id)}",
+                f"{_indent_val}   Location: {_issue.fname}:{_issue.lineno}:{_issue.col_offset}",
             ]
+
             if _code:
                 return_val.append(f"{_indent_val}{_code}")
             return "\n".join(return_val)
@@ -148,7 +139,7 @@ class TextFormatterTests(testtools.TestCase):
                 "binding.py (score: ",
                 "CONFIDENCE: 1",
                 "SEVERITY: 1",
-                "CWE: %s" % str(issue.Cwe(issue.Cwe.MULTIPLE_BINDS)),
+                f"CWE: {str(issue.Cwe(issue.Cwe.MULTIPLE_BINDS))}",
                 "Files excluded (1):",
                 "def.py",
                 "Undefined: 1",
@@ -164,6 +155,7 @@ class TextFormatterTests(testtools.TestCase):
                 "Files skipped (1)",
                 "abc.py (File is bad)",
             ]
+
             for item in expected_items:
                 self.assertIn(item, data)
 

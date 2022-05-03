@@ -28,34 +28,13 @@ class ScreenFormatterTests(testtools.TestCase):
 
         def _template(_issue, _indent_val, _code, _color):
             return_val = [
-                "{}{}>> Issue: [{}:{}] {}".format(
-                    _indent_val,
-                    _color,
-                    _issue.test_id,
-                    _issue.test,
-                    _issue.text,
-                ),
-                "{}   Severity: {}   Confidence: {}".format(
-                    _indent_val,
-                    _issue.severity.capitalize(),
-                    _issue.confidence.capitalize(),
-                ),
-                "{}   CWE: {}".format(
-                    _indent_val,
-                    _issue.cwe,
-                ),
-                "{}   More Info: {}".format(
-                    _indent_val,
-                    docs_utils.get_url(_issue.test_id),
-                ),
-                "{}   Location: {}:{}:{}{}".format(
-                    _indent_val,
-                    _issue.fname,
-                    _issue.lineno,
-                    _issue.col_offset,
-                    screen.COLOR["DEFAULT"],
-                ),
+                f"{_indent_val}{_color}>> Issue: [{_issue.test_id}:{_issue.test}] {_issue.text}",
+                f"{_indent_val}   Severity: {_issue.severity.capitalize()}   Confidence: {_issue.confidence.capitalize()}",
+                f"{_indent_val}   CWE: {_issue.cwe}",
+                f"{_indent_val}   More Info: {docs_utils.get_url(_issue.test_id)}",
+                f'{_indent_val}   Location: {_issue.fname}:{_issue.lineno}:{_issue.col_offset}{screen.COLOR["DEFAULT"]}',
             ]
+
             if _code:
                 return_val.append(f"{_indent_val}{_code}")
             return "\n".join(return_val)
