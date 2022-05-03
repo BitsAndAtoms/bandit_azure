@@ -20,10 +20,6 @@ for i in {0,2}:
         a = i
     except ZeroDivisionError:
         continue
-    except:
-        a = 2
-
-
 # good
 while keep_trying:
     try:

@@ -334,8 +334,7 @@ def gen_blacklist():
 
     :return: a dictionary mapping node types to a list of blacklist data
     """
-    sets = []
-    sets.append(
+    sets = [
         utils.build_conf_dict(
             "pickle",
             "B301",
@@ -356,7 +355,7 @@ def gen_blacklist():
             "Pickle and modules that wrap it can be unsafe when used to "
             "deserialize untrusted data, possible security issue.",
         )
-    )
+    ]
 
     sets.append(
         utils.build_conf_dict(

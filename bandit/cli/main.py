@@ -28,12 +28,7 @@ def _init_logger(log_level=logging.INFO, log_format=None):
     """
     LOG.handlers = []
 
-    if not log_format:
-        # default log format
-        log_format_string = constants.log_format_string
-    else:
-        log_format_string = log_format
-
+    log_format_string = log_format or constants.log_format_string
     logging.captureWarnings(True)
 
     LOG.setLevel(log_level)
@@ -54,8 +49,10 @@ def _get_options_from_ini(ini_path, target):
 
         for t in target:
             for root, _, filenames in os.walk(t):
-                for filename in fnmatch.filter(filenames, ".bandit"):
-                    bandit_files.append(os.path.join(root, filename))
+                bandit_files.extend(
+                    os.path.join(root, filename)
+                    for filename in fnmatch.filter(filenames, ".bandit")
+                )
 
         if len(bandit_files) > 1:
             LOG.error(
@@ -67,12 +64,8 @@ def _get_options_from_ini(ini_path, target):
 
         elif len(bandit_files) == 1:
             ini_file = bandit_files[0]
-            LOG.info("Found project level .bandit file: %s", bandit_files[0])
-
-    if ini_file:
-        return utils.parse_ini_file(ini_file)
-    else:
-        return None
+            LOG.info("Found project level .bandit file: %s", ini_file)
+    return utils.parse_ini_file(ini_file) if ini_file else None
 
 
 def _init_extensions():
@@ -93,10 +86,8 @@ def _log_option_source(default_val, arg_val, ini_val, option_name):
             return ini_val
         else:
             return None
-    # No value passed to commad line and default value is used
     elif default_val == arg_val:
-        return ini_val if ini_val else arg_val
-    # Certainly a value is passed to commad line
+        return ini_val or arg_val
     else:
         return arg_val
 
@@ -123,8 +114,8 @@ def _get_profile(config, profile_name, config_path):
 
 
 def _log_info(args, profile):
-    inc = ",".join([t for t in profile["include"]]) or "None"
-    exc = ",".join([t for t in profile["exclude"]]) or "None"
+    inc = ",".join(list(profile["include"])) or "None"
+    exc = ",".join(list(profile["exclude"])) or "None"
     LOG.info("profile include tests: %s", inc)
     LOG.info("profile exclude tests: %s", exc)
     LOG.info("cli include tests: %s", args.tests)
